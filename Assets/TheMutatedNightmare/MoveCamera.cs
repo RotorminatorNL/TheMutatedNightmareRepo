@@ -9,17 +9,34 @@ public class MoveCamera : MonoBehaviour
     [SerializeField] private InputActionReference camera_ia_rightclick;
     [SerializeField] private InputActionReference camera_ia_shiftpress;
     [SerializeField] private float camAngleMoveSpeed = 0.4f;
-    [SerializeField] private float moveSpeed = 0.01f;
-    [SerializeField] private float shiftMoveSpeed = 0.04f;
+    [SerializeField] private int stepsSpeedStabilization = 20;
+    [SerializeField] private int stepsDirectionStabilization = 5;
+    [SerializeField] private float speedIncrease = 0.01f;
+    [SerializeField] private float shiftSpeedIncrease = 0.04f;
 
     private Vector2 previousMousePos;
     private bool prevMousePosCorrect = false;
+
+    private bool firstMoveDir = true;
+    private Vector3 prevMoveDir;
+    private Vector3 prevNextPos;
+    private bool changeDir = false;
+    private int currentStepDirStab = 0;
+
+    private int currentStepSpeedStab = 0;
+    private float currentSpeed = 0f;
+    private float currentShiftSpeed = 0f;
 
     void Update()
     {
         if (!camera_ia_rightclick.action.IsPressed()) 
         {
-            if (prevMousePosCorrect) prevMousePosCorrect = false;
+            prevMousePosCorrect = false;
+            firstMoveDir = true;
+            currentStepDirStab = 0;
+            currentStepSpeedStab = 0;
+            currentSpeed = 0f;
+            currentShiftSpeed = 0f;
             return;
         }
 
@@ -45,16 +62,81 @@ public class MoveCamera : MonoBehaviour
 
     private void ChangeCameraPos()
     {
+        Vector3 nextPos = GetNextPos();
+        if (nextPos == Vector3.zero)
+        {
+            firstMoveDir = true;
+            currentStepDirStab = 0;
+            currentStepSpeedStab = 0;
+            currentSpeed = 0f;
+            currentShiftSpeed = 0f;
+        }
+
+        currentSpeed += speedIncrease;
+        currentShiftSpeed += shiftSpeedIncrease;
+
+        Vector3 nextPosCorrection = new();
+        if (currentStepSpeedStab < stepsSpeedStabilization)
+        {
+            float currentSpeedCorrection = currentSpeed / stepsSpeedStabilization * currentStepSpeedStab;
+            float currentSpeedShiftCorrection = currentShiftSpeed / stepsSpeedStabilization * currentStepSpeedStab;
+
+            if (camera_ia_shiftpress.action.IsPressed()) nextPosCorrection = currentSpeedShiftCorrection * Time.deltaTime * nextPos;
+            else nextPosCorrection = currentSpeedCorrection * Time.deltaTime * nextPos;
+            
+            currentStepSpeedStab++;
+        }
+        else
+        {
+            if (camera_ia_shiftpress.action.IsPressed()) nextPosCorrection = currentShiftSpeed * Time.deltaTime * nextPos;
+            else nextPosCorrection = currentSpeed * Time.deltaTime * nextPos;
+        }
+
+        transform.position += nextPosCorrection;
+    }
+
+    private Vector3 GetNextPos()
+    {
         Vector3 moveDirection = camera_ia_move.action.ReadValue<Vector3>();
-        Vector3 nextPos = Vector3.zero;
-        if (moveDirection.z > 0) nextPos += transform.forward;
-        if (moveDirection.z < 0) nextPos += -transform.forward;
-        if (moveDirection.x > 0) nextPos += transform.right;
-        if (moveDirection.x < 0) nextPos += -transform.right;
-        if (moveDirection.y > 0) nextPos += transform.up;
-        if (moveDirection.y < 0) nextPos += -transform.up;
-        
-        if (!camera_ia_shiftpress.action.IsPressed()) transform.position += nextPos * moveSpeed;
-        else transform.position += nextPos * shiftMoveSpeed;
+        Vector3 returnValue = Vector3.zero;
+        if (moveDirection.z > 0) returnValue += transform.forward;
+        if (moveDirection.z < 0) returnValue += -transform.forward;
+        if (moveDirection.x > 0) returnValue += transform.right;
+        if (moveDirection.x < 0) returnValue += -transform.right;
+        if (moveDirection.y > 0) returnValue += transform.up;
+        if (moveDirection.y < 0) returnValue += -transform.up;
+
+        if (!firstMoveDir)
+        {
+            if (prevMoveDir != moveDirection && changeDir)
+            {
+                currentStepDirStab = 0;
+                prevNextPos = returnValue;
+            }
+            if ((prevMoveDir != moveDirection && moveDirection != Vector3.zero) || changeDir)
+            {
+                if (currentStepDirStab < stepsDirectionStabilization)
+                {
+                    Vector3 posA = prevNextPos / stepsDirectionStabilization * (stepsDirectionStabilization - currentStepDirStab);
+                    Vector3 posB = returnValue / stepsDirectionStabilization * currentStepDirStab;
+                    returnValue = posA + posB;
+
+                    changeDir = true;
+                    currentStepDirStab++;
+
+                    Debug.Log("Sweg");
+                }
+                else
+                {
+                    changeDir = false;
+                    currentStepDirStab = 0;
+                }
+            }
+        }
+
+        prevMoveDir = moveDirection;
+        if (firstMoveDir || !changeDir) prevNextPos = returnValue;
+        firstMoveDir = false;
+        return returnValue;
     }
 }
