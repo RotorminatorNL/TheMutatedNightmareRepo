@@ -321,7 +321,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &756192407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -363,7 +363,6 @@ GameObject:
   - component: {fileID: 1074603118}
   - component: {fileID: 1074603116}
   - component: {fileID: 1074603120}
-  - component: {fileID: 1074603121}
   m_Layer: 0
   m_Name: CameraForTesting
   m_TagString: Untagged
@@ -474,13 +473,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1074603115}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalRotation: {x: 0.2588191, y: 0, z: 0, w: 0.9659258}
+  m_LocalPosition: {x: 0, y: 7, z: -50}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
 --- !u!114 &1074603120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -493,39 +492,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88b390d3954e91c40a7ac29227bd6bd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 1074603121}
   camera_ia_mouseposition: {fileID: 1143902467445171704, guid: e80ef1fb31c4af04e8c41834f24ce4cc, type: 3}
   camera_ia_move: {fileID: -5169506935252257719, guid: e80ef1fb31c4af04e8c41834f24ce4cc, type: 3}
   camera_ia_rightclick: {fileID: 5659119126962218630, guid: e80ef1fb31c4af04e8c41834f24ce4cc, type: 3}
-  moveSpeed: 0.1
-  camAngleMoveSpeed: 0.5
---- !u!54 &1074603121
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1074603115}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
+  camera_ia_shiftpress: {fileID: -5131405391613752397, guid: e80ef1fb31c4af04e8c41834f24ce4cc, type: 3}
+  camAngleMoveSpeed: 0.4
+  moveSpeed: 0.01
+  shiftMoveSpeed: 0.04
 --- !u!1 &1249617917
 GameObject:
   m_ObjectHideFlags: 0

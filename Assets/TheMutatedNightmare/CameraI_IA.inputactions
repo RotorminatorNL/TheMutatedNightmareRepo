@@ -6,6 +6,15 @@
             "id": "aa7b7203-6a46-41a4-8415-ebbf7b6f4cff",
             "actions": [
                 {
+                    "name": "MousePosition",
+                    "type": "PassThrough",
+                    "id": "c967f380-4c58-4ce2-b829-18540b03c32e",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "Move",
                     "type": "PassThrough",
                     "id": "12bce173-9107-411d-a062-071a5a3f7674",
@@ -24,13 +33,13 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "MousePosition",
-                    "type": "PassThrough",
-                    "id": "c967f380-4c58-4ce2-b829-18540b03c32e",
-                    "expectedControlType": "Vector2",
+                    "name": "Shiftpress",
+                    "type": "Button",
+                    "id": "b433045f-64de-4f2c-b92b-421872706363",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -130,6 +139,17 @@
                     "processors": "",
                     "groups": ";CameraScheme",
                     "action": "MousePosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f842fb1b-8137-4cb4-9b59-507b44b50303",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";CameraScheme",
+                    "action": "Shiftpress",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

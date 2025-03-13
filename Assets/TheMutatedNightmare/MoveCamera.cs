@@ -1,43 +1,60 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class MoveCamera : MonoBehaviour
 {
-    [SerializeField] private Rigidbody rb;
     [SerializeField] private InputActionReference camera_ia_mouseposition;
     [SerializeField] private InputActionReference camera_ia_move;
     [SerializeField] private InputActionReference camera_ia_rightclick;
-    [SerializeField] private float moveSpeed = 0.1f;
-    [SerializeField] private float camAngleMoveSpeed = 1;
+    [SerializeField] private InputActionReference camera_ia_shiftpress;
+    [SerializeField] private float camAngleMoveSpeed = 0.4f;
+    [SerializeField] private float moveSpeed = 0.01f;
+    [SerializeField] private float shiftMoveSpeed = 0.04f;
 
-    private Vector3 moveDirection;
-
-    private Vector2 previousMousePos = new(10000, 10000);
-    private Quaternion angleDirection;
+    private Vector2 previousMousePos;
+    private bool prevMousePosCorrect = false;
 
     void Update()
     {
-        if (!camera_ia_rightclick.action.IsPressed()) return;
+        if (!camera_ia_rightclick.action.IsPressed()) 
+        {
+            if (prevMousePosCorrect) prevMousePosCorrect = false;
+            return;
+        }
 
-        moveDirection = transform.forward + camera_ia_move.action.ReadValue<Vector3>() * moveSpeed;
+        ChangeCameraRot();
+        ChangeCameraPos();
+    }
 
+    private void ChangeCameraRot()
+    {
         Vector2 mousePos = camera_ia_mouseposition.action.ReadValue<Vector2>();
 
-        if (previousMousePos != new Vector2(10000, 10000))
+        if (prevMousePosCorrect)
         {
-            float newValue = transform.rotation.z + (mousePos.y - previousMousePos.y);
-            angleDirection = new Quaternion(transform.rotation.x, transform.rotation.y, newValue, transform.rotation.w);
+            float newX = mousePos.y - previousMousePos.y;
+            float newY = mousePos.x - previousMousePos.x;
+            Vector3 angleDirection = new Vector2(-newX, newY) * camAngleMoveSpeed;
+            transform.eulerAngles += angleDirection;
         }
 
         previousMousePos = mousePos;
+        prevMousePosCorrect = true;
     }
 
-    private void FixedUpdate()
+    private void ChangeCameraPos()
     {
-        if (!camera_ia_rightclick.action.IsPressed()) return;
-
-        //rb.linearVelocity = moveDirection;
-        //transform.position = transform.position + moveDirection;
-        transform.rotation = Quaternion.Lerp(transform.rotation, angleDirection, camAngleMoveSpeed);
+        Vector3 moveDirection = camera_ia_move.action.ReadValue<Vector3>();
+        Vector3 nextPos = Vector3.zero;
+        if (moveDirection.z > 0) nextPos += transform.forward;
+        if (moveDirection.z < 0) nextPos += -transform.forward;
+        if (moveDirection.x > 0) nextPos += transform.right;
+        if (moveDirection.x < 0) nextPos += -transform.right;
+        if (moveDirection.y > 0) nextPos += transform.up;
+        if (moveDirection.y < 0) nextPos += -transform.up;
+        
+        if (!camera_ia_shiftpress.action.IsPressed()) transform.position += nextPos * moveSpeed;
+        else transform.position += nextPos * shiftMoveSpeed;
     }
 }
