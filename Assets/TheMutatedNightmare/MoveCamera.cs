@@ -17,12 +17,6 @@ public class MoveCamera : MonoBehaviour
     private Vector2 previousMousePos;
     private bool prevMousePosCorrect = false;
 
-    private bool firstMoveDir = true;
-    private Vector3 prevMoveDir;
-    private Vector3 prevNextPos;
-    private bool changeDir = false;
-    private int currentStepDirStab = 0;
-
     private int currentStepSpeedStab = 0;
     private float currentSpeed = 0f;
     private float currentShiftSpeed = 0f;
@@ -32,8 +26,6 @@ public class MoveCamera : MonoBehaviour
         if (!camera_ia_rightclick.action.IsPressed()) 
         {
             prevMousePosCorrect = false;
-            firstMoveDir = true;
-            currentStepDirStab = 0;
             currentStepSpeedStab = 0;
             currentSpeed = 0f;
             currentShiftSpeed = 0f;
@@ -65,8 +57,6 @@ public class MoveCamera : MonoBehaviour
         Vector3 nextPos = GetNextPos();
         if (nextPos == Vector3.zero)
         {
-            firstMoveDir = true;
-            currentStepDirStab = 0;
             currentStepSpeedStab = 0;
             currentSpeed = 0f;
             currentShiftSpeed = 0f;
@@ -75,8 +65,8 @@ public class MoveCamera : MonoBehaviour
         currentSpeed += speedIncrease;
         currentShiftSpeed += shiftSpeedIncrease;
 
-        Vector3 nextPosCorrection = new();
-        if (currentStepSpeedStab < stepsSpeedStabilization)
+        Vector3 nextPosCorrection;
+        if (currentStepSpeedStab <= stepsSpeedStabilization)
         {
             float currentSpeedCorrection = currentSpeed / stepsSpeedStabilization * currentStepSpeedStab;
             float currentSpeedShiftCorrection = currentShiftSpeed / stepsSpeedStabilization * currentStepSpeedStab;
@@ -98,6 +88,8 @@ public class MoveCamera : MonoBehaviour
     private Vector3 GetNextPos()
     {
         Vector3 moveDirection = camera_ia_move.action.ReadValue<Vector3>();
+        if (moveDirection == Vector3.zero) return Vector3.zero;
+
         Vector3 returnValue = Vector3.zero;
         if (moveDirection.z > 0) returnValue += transform.forward;
         if (moveDirection.z < 0) returnValue += -transform.forward;
@@ -105,38 +97,6 @@ public class MoveCamera : MonoBehaviour
         if (moveDirection.x < 0) returnValue += -transform.right;
         if (moveDirection.y > 0) returnValue += transform.up;
         if (moveDirection.y < 0) returnValue += -transform.up;
-
-        if (!firstMoveDir)
-        {
-            if (prevMoveDir != moveDirection && changeDir)
-            {
-                currentStepDirStab = 0;
-                prevNextPos = returnValue;
-            }
-            if ((prevMoveDir != moveDirection && moveDirection != Vector3.zero) || changeDir)
-            {
-                if (currentStepDirStab < stepsDirectionStabilization)
-                {
-                    Vector3 posA = prevNextPos / stepsDirectionStabilization * (stepsDirectionStabilization - currentStepDirStab);
-                    Vector3 posB = returnValue / stepsDirectionStabilization * currentStepDirStab;
-                    returnValue = posA + posB;
-
-                    changeDir = true;
-                    currentStepDirStab++;
-
-                    Debug.Log("Sweg");
-                }
-                else
-                {
-                    changeDir = false;
-                    currentStepDirStab = 0;
-                }
-            }
-        }
-
-        prevMoveDir = moveDirection;
-        if (firstMoveDir || !changeDir) prevNextPos = returnValue;
-        firstMoveDir = false;
         return returnValue;
     }
 }
