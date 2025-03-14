@@ -10,9 +10,8 @@ public class MoveCamera : MonoBehaviour
     [SerializeField] private InputActionReference camera_ia_shiftpress;
     [SerializeField] private float camAngleMoveSpeed = 0.4f;
     [SerializeField] private int stepsSpeedStabilization = 20;
-    [SerializeField] private int stepsDirectionStabilization = 5;
     [SerializeField] private float speedIncrease = 0.01f;
-    [SerializeField] private float shiftSpeedIncrease = 0.04f;
+    [SerializeField] private float shiftSpeedIncrease = 0.03f;
 
     private Vector2 previousMousePos;
     private bool prevMousePosCorrect = false;

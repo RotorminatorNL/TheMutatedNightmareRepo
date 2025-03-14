@@ -498,9 +498,8 @@ MonoBehaviour:
   camera_ia_shiftpress: {fileID: -5131405391613752397, guid: e80ef1fb31c4af04e8c41834f24ce4cc, type: 3}
   camAngleMoveSpeed: 0.4
   stepsSpeedStabilization: 20
-  stepsDirectionStabilization: 20
   speedIncrease: 0.01
-  shiftSpeedIncrease: 0.04
+  shiftSpeedIncrease: 0.03
 --- !u!1 &1249617917
 GameObject:
   m_ObjectHideFlags: 0
@@ -880,13 +879,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2108457892}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.38268343, z: 0, w: 0.92387956}
+  m_LocalRotation: {x: -0.13209121, y: 0.3787519, z: 0.05471397, w: 0.914388}
   m_LocalPosition: {x: 0, y: 5.305, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
+  m_LocalEulerAnglesHint: {x: -16.44, y: 45, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
