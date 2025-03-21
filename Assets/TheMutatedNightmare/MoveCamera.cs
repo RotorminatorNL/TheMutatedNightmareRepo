@@ -96,6 +96,11 @@ public class MoveCamera : MonoBehaviour
         if (moveDirection.x < 0) returnValue += -transform.right;
         if (moveDirection.y > 0) returnValue += transform.up;
         if (moveDirection.y < 0) returnValue += -transform.up;
+
+        if (moveDirection.x != 0 && moveDirection.y != 0 && moveDirection.z == 0) return returnValue / 2;
+        if (moveDirection.x != 0 && moveDirection.y == 0 && moveDirection.z != 0) return returnValue / 2;
+        if (moveDirection.x == 0 && moveDirection.y != 0 && moveDirection.z != 0) return returnValue / 2;
+
         return returnValue;
     }
 }
